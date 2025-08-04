@@ -1,0 +1,14 @@
+# application.properties 직접 만들어서 여기 있는 내용 복사해서 사용하세요!
+
+# RDS MySQL 연결용
+spring.datasource.url=jdbc:mysql://<RDS엔드포인트>:3306/<DB이름>?serverTimezone=Asia/Seoul&useSSL=false
+spring.datasource.username=<여기에_입력>
+spring.datasource.password=<여기에_입력>
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.hibernate.ddl-auto=update
+
+
+# Security 로그인 용
+spring.security.user.name=<여기에 입력>
+spring.security.user.password=1234 <여기에 입력>
+
