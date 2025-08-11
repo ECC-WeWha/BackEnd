@@ -1,17 +1,22 @@
 package com.example.wewha.comments.service;
 
 import com.example.wewha.comments.dto.comment.CommentResponse;
+import com.example.wewha.dto.comment.UpdateCommentRequest;
 import com.example.wewha.comments.dto.comment.CreateCommentRequest;
 import com.example.wewha.comments.entity.Comment;
 import com.example.wewha.comments.entity.Post;
 import com.example.wewha.comments.entity.User;
 import com.example.wewha.comments.exception.NotFoundException;
+import com.example.wewha.exception.ForbiddenException;
 import com.example.wewha.comments.repository.CommentRepository;
+import lombok.RequiredArgsConstructor;
 import com.example.wewha.comments.repository.PostRepository;
 import com.example.wewha.comments.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +46,28 @@ public class CommentService {
                 saved.getCreatedAt(),
                 saved.getUpdatedAt(),
                 saved.getLikeCount()
+        );
+    }
+    /** 댓글 수정: 작성자 본인만 가능 */
+    public CommentResponse update(Long userId, Long commentId, UpdateCommentRequest req) {
+        Comment c = commentRepo.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("comment"));
+
+        if (!Objects.equals(c.getAuthor().getUserId(), userId)) {
+            throw new ForbiddenException("작성자만 수정할 수 있습니다.");
+        }
+
+        c.setContent(req.content().trim());
+
+        // JPA dirty checking으로 업데이트 반영
+        return new CommentResponse(
+                c.getCommentId(),
+                c.getPost().getPostId(),
+                c.getAuthor().getUserId(),
+                c.getContent(),
+                c.getCreatedAt(),
+                c.getUpdatedAt(),
+                c.getLikeCount()
         );
     }
 }
