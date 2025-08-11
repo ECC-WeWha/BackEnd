@@ -89,4 +89,14 @@ public class PostService {
         // Page<Post>를 Page<PostSummaryResponse>로 변환하여 반환
         return posts.map(PostSummaryResponse::new);
     }
+
+    @Transactional(readOnly = true)
+    public PostDetailResponse getPostDetail(Long postId) {
+        // 1. ID로 게시글을 찾아옵니다. 없으면 예외를 발생시킵니다.
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+
+        // 2. 찾아온 Post 엔티티를 PostDetailResponse DTO로 변환하여 반환합니다.
+        return new PostDetailResponse(post);
+    }
 }
