@@ -76,4 +76,16 @@ public class PostService {
         // 변경된 post 객체로 응답 DTO를 생성하여 반환
         return new PostUpdateResponse(post);
     }
+
+    @Transactional
+    public void deletePost(Long postId) {
+        // 1. ID를 사용해 기존 게시글을 데이터베이스에서 찾아옵니다.
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+
+        // TODO: 로그인한 사용자가 게시글의 작성자인지 확인하는 로직 필요
+
+        // 2. 찾아온 게시글을 삭제합니다.
+        postRepository.delete(post);
+    }
 }

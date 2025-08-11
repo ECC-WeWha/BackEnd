@@ -47,4 +47,12 @@ public class PostController {
         ApiResponse<PostUpdateResponse> response = new ApiResponse<>(200, "게시글이 성공적으로 수정되었습니다.", responseData);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long postId) {
+        // TODO: 실제로는 @AuthenticationPrincipal로 받은 사용자와 게시글 작성자가 일치하는지 확인해야 함
+        postService.deletePost(postId);
+        ApiResponse<Void> response = new ApiResponse<>(204, "게시글이 성공적으로 삭제되었습니다.", null);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+    }
 }
