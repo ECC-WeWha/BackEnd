@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(name = "post_image") // ERD의 테이블명과 일치시킵니다.
+@Table(name = "PostImage") // ERD의 테이블명과 일치시킵니다.
 public class PostImage {
 
     @Id

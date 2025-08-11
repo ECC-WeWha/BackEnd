@@ -6,6 +6,8 @@ import com.example.wewha.post.common.domain.PostImage;
 import com.example.wewha.post.common.domain.User;
 import com.example.wewha.post.general.dto.PostCreateRequest;
 import com.example.wewha.post.general.dto.PostCreateResponse;
+import com.example.wewha.post.general.dto.PostUpdateRequest;
+import com.example.wewha.post.general.dto.PostUpdateResponse;
 import com.example.wewha.post.general.repository.CategoryRepository;
 import com.example.wewha.post.general.repository.PostImageRepository;
 import com.example.wewha.post.general.repository.PostRepository;
@@ -59,5 +61,19 @@ public class PostService {
 
         // 5. 응답 DTO 생성 후 반환
         return PostCreateResponse.of(newPost, request.getImageUrls());
+    }
+
+    @Transactional
+    public PostUpdateResponse updatePost(Long postId, PostUpdateRequest request) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+
+        // TODO: 로그인한 사용자가 게시글의 작성자인지 확인하는 로직 필요
+        // 나중에 할게용 ..
+
+        post.update(request.getTitle(), request.getContent());
+
+        // 변경된 post 객체로 응답 DTO를 생성하여 반환
+        return new PostUpdateResponse(post);
     }
 }
