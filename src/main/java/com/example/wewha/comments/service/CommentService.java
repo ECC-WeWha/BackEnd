@@ -70,4 +70,17 @@ public class CommentService {
                 c.getLikeCount()
         );
     }
+    public void delete(Long userId, Long commentId, boolean isAdmin) {
+        Comment c = commentRepo.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("comment"));
+
+        // 작성자이거나 관리자만 삭제 허용
+        Long authorId = c.getAuthor().getUserId();
+        if (!isAdmin && (authorId == null || !authorId.equals(userId))) {
+            throw new ForbiddenException("작성자만 삭제할 수 있습니다.");
+        }
+
+        // comment_likes가 FK ON DELETE CASCADE면 이것만으로 정리됨
+        commentRepo.delete(c);
+    }
 }
