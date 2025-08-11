@@ -56,4 +56,12 @@ public class Post {
         if (content != null) this.content = content;
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void increaseLikeCount() {
+        this.likeCount += 1;
+    }
+
+    public void decreaseLikeCount() {
+        this.likeCount = Math.max(0, this.likeCount - 1); // 0 미만으로 내려가지 않도록
+    }
 }
