@@ -43,4 +43,13 @@ public class CommentController {
         return ResponseEntity.ok(commentService.update(userId, commentId, req));
     }
 
+    /** DELETE /api/comments/{commentId} */
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> delete(@PathVariable Long commentId) {
+        Long userId = requireUserId();
+        boolean isAdmin = SecurityUtils.hasRole("ADMIN"); // 권한 없으면 false
+        commentService.delete(userId, commentId, isAdmin);
+        return ResponseEntity.noContent().build();
+    }
+
 }
