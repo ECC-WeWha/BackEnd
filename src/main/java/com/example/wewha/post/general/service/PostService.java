@@ -4,10 +4,7 @@ import com.example.wewha.post.common.domain.Category;
 import com.example.wewha.post.common.domain.Post;
 import com.example.wewha.post.common.domain.PostImage;
 import com.example.wewha.post.common.domain.User;
-import com.example.wewha.post.general.dto.PostCreateRequest;
-import com.example.wewha.post.general.dto.PostCreateResponse;
-import com.example.wewha.post.general.dto.PostUpdateRequest;
-import com.example.wewha.post.general.dto.PostUpdateResponse;
+import com.example.wewha.post.general.dto.*;
 import com.example.wewha.post.general.repository.CategoryRepository;
 import com.example.wewha.post.general.repository.PostImageRepository;
 import com.example.wewha.post.general.repository.PostRepository;
@@ -16,6 +13,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -75,5 +74,19 @@ public class PostService {
 
         // 변경된 post 객체로 응답 DTO를 생성하여 반환
         return new PostUpdateResponse(post);
+    }
+
+    @Transactional(readOnly = true) // 조회 기능이므로 readOnly = true
+    public Page<PostSummaryResponse> getPosts(String category, Pageable pageable) {
+        Page<Post> posts;
+        if (category != null && !category.isEmpty()) {
+            // 카테고리 필터가 있는 경우
+            posts = postRepository.findByCategory_Name(category, pageable);
+        } else {
+            // 카테고리 필터가 없는 경우 (전체 조회)
+            posts = postRepository.findAll(pageable);
+        }
+        // Page<Post>를 Page<PostSummaryResponse>로 변환하여 반환
+        return posts.map(PostSummaryResponse::new);
     }
 }

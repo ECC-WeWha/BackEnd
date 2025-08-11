@@ -1,10 +1,7 @@
 package com.example.wewha.post.general.controller;
 
 import com.example.wewha.post.common.dto.ApiResponse;
-import com.example.wewha.post.general.dto.PostCreateRequest;
-import com.example.wewha.post.general.dto.PostCreateResponse;
-import com.example.wewha.post.general.dto.PostUpdateRequest;
-import com.example.wewha.post.general.dto.PostUpdateResponse;
+import com.example.wewha.post.general.dto.*;
 import com.example.wewha.post.general.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -47,4 +46,16 @@ public class PostController {
         ApiResponse<PostUpdateResponse> response = new ApiResponse<>(200, "게시글이 성공적으로 수정되었습니다.", responseData);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<Page<PostSummaryResponse>>> getPosts(
+            @RequestParam(required = false) String category,
+            Pageable pageable) {
+
+        Page<PostSummaryResponse> responseData = postService.getPosts(category, pageable);
+        ApiResponse<Page<PostSummaryResponse>> response = new ApiResponse<>(200, "게시글 목록 조회 성공!", responseData);
+        return ResponseEntity.ok(response);
+    }
+
+
 }
