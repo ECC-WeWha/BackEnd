@@ -2,6 +2,7 @@ package com.example.wewha.comments.controller;
 
 import com.example.wewha.comments.dto.comment.CommentResponse;
 import com.example.wewha.comments.dto.comment.CreateCommentRequest;
+import com.example.wewha.comments.dto.comment.LikeToggleResponse;
 import com.example.wewha.comments.dto.comment.UpdateCommentRequest;
 import com.example.wewha.comments.security.SecurityUtils;
 import com.example.wewha.comments.service.CommentService;
@@ -50,6 +51,15 @@ public class CommentController {
         boolean isAdmin = SecurityUtils.hasRole("ADMIN"); // 권한 없으면 false
         commentService.delete(userId, commentId, isAdmin);
         return ResponseEntity.noContent().build();
+    }
+
+
+
+    /** POST /api/comments/{commentId}/likes */
+    @PostMapping("/{commentId}/likes")
+    public ResponseEntity<LikeToggleResponse> toggleLike(@PathVariable Long commentId) {
+        Long userId = requireUserId(); // 임시로 X-USER-ID 헤더 쓰는 중이면 그 방식으로 대체
+        return ResponseEntity.ok(commentService.toggleLike(userId, commentId));
     }
 
 }
