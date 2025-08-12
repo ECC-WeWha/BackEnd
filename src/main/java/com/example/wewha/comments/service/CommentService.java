@@ -1,18 +1,17 @@
 package com.example.wewha.comments.service;
 
 import com.example.wewha.comments.dto.comment.CommentResponse;
-import com.example.wewha.dto.comment.UpdateCommentRequest;
+import com.example.wewha.comments.exception.NotFoundException;
+import com.example.wewha.comments.dto.comment.UpdateCommentRequest;
 import com.example.wewha.comments.dto.comment.CreateCommentRequest;
 import com.example.wewha.comments.entity.Comment;
 import com.example.wewha.comments.entity.Post;
 import com.example.wewha.comments.entity.User;
-import com.example.wewha.comments.exception.NotFoundException;
-import com.example.wewha.exception.ForbiddenException;
+import com.example.wewha.comments.exception.ForbiddenException;
 import com.example.wewha.comments.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import com.example.wewha.comments.repository.PostRepository;
 import com.example.wewha.comments.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
