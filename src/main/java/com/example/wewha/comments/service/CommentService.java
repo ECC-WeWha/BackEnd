@@ -15,7 +15,6 @@ import com.example.wewha.comments.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import com.example.wewha.comments.repository.PostRepository;
 import com.example.wewha.comments.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
