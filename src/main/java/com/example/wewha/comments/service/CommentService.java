@@ -9,7 +9,7 @@ import com.example.wewha.comments.entity.CommentLike;
 import com.example.wewha.comments.entity.Post;
 import com.example.wewha.comments.entity.User;
 import com.example.wewha.comments.exception.NotFoundException;
-import com.example.wewha.exception.ForbiddenException;
+import com.example.wewha.comments.exception.ForbiddenException;
 import com.example.wewha.comments.repository.CommentLikeRepository;
 import com.example.wewha.comments.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
