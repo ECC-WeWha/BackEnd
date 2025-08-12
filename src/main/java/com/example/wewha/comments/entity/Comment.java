@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.example.wewha.post.common.domain.Post;
+import com.example.wewha.post.common.domain.User;
 
 import java.time.Instant;
 
