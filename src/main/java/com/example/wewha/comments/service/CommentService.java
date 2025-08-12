@@ -6,7 +6,7 @@ import com.example.wewha.comments.dto.comment.UpdateCommentRequest;
 import com.example.wewha.comments.dto.comment.CreateCommentRequest;
 import com.example.wewha.comments.entity.Comment;
 import com.example.wewha.post.common.domain.Post;
-import com.example.wewha.comments.entity.User;
+import com.example.wewha.post.common.domain.User;
 import com.example.wewha.comments.exception.ForbiddenException;
 import com.example.wewha.comments.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
