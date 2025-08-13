@@ -16,15 +16,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration
+@Configuration("authSecurityConfig") // <- 빈 이름 명시 (중복 방지)
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class AuthSecurityConfig {    // <- 클래스명 변경 (중복 방지)
 
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Bean(name = "apiSecurityFilterChain") // <- @Bean 이름도 명시 (다른 설정과 충돌 방지)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -37,23 +37,20 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/auth/delete").authenticated()
                         .anyRequest().denyAll()
                 )
-
                 .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)
-                        )
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // 비밀번호 암호화
+    @Bean(name = "authPasswordEncoder") // <- 이름 분리 (다른 곳에도 passwordEncoder 있으면 충돌 방지)
+    public PasswordEncoder authPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    @Bean(name = "authAuthenticationManager") // <- 이름 분리
+    public AuthenticationManager authAuthenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }
