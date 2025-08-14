@@ -21,7 +21,7 @@ public class PostCreateResponse {
     // 빌더 패턴이나 정적 팩토리 메서드를 사용하면 객체 생성이 편리합니다.
     public static PostCreateResponse of(Post post, List<String> imageUrls) {
         PostCreateResponse response = new PostCreateResponse();
-        response.userId = post.getUser().getId();
+        response.userId = post.getUser().getUserId();
         response.postId = post.getId();
         response.title = post.getTitle();
         response.content = post.getContent();
