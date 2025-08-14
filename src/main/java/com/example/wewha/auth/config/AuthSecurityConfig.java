@@ -10,6 +10,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,34 +25,38 @@ public class AuthSecurityConfig {    // <- 클래스명 변경 (중복 방지)
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
 
-    @Bean(name = "apiSecurityFilterChain") // <- @Bean 이름도 명시 (다른 설정과 충돌 방지)
+    @Bean
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable())
+        http
+                // 1. CSRF, 세션 관리 설정 (Stateless API를 위함)
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/signup", "/api/auth/login", "/api/auth/kakao").permitAll()
-                        .requestMatchers("/oauth2/**", "/login/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "/api/users/**").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/auth/delete").authenticated()
-                        .anyRequest().denyAll()
+
+                // 2. H2 콘솔을 위한 프레임 옵션 허용
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/h2-console/**").permitAll() // H2 콘솔
+                        .requestMatchers("/api/auth/**", "/oauth2/**", "/login/**").permitAll() // 인증 관련 경로
+                        .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/**").permitAll() // 게시글 조회 API
+                        .anyRequest().authenticated()
                 )
+
+                // 4. OAuth2 로그인 설정
+                /*
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .build();
+                */
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 
-    @Bean(name = "authPasswordEncoder") // <- 이름 분리 (다른 곳에도 passwordEncoder 있으면 충돌 방지)
-    public PasswordEncoder authPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean(name = "authAuthenticationManager") // <- 이름 분리
     public AuthenticationManager authAuthenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
 }
