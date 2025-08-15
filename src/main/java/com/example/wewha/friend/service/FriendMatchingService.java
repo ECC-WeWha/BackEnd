@@ -42,6 +42,7 @@ public class FriendMatchingService {
         return saved;
     }
 
+    @Transactional(readOnly = true)
     public List<MatchProfileResponseDto> showProfileByStudyLanguage(User currentUser, String languageName) {
         // 1. 파라미터로 받아온 언어와 학습언어가 일치하는 유저 프로필 가져오기
         Language studyLanguage = languageRepository.findByName(languageName)
