@@ -1,21 +1,27 @@
 package com.example.wewha.friend.service;
 
 import com.example.wewha.common.entity.User;
+import com.example.wewha.common.entity.UserProfile;
 import com.example.wewha.common.exception.CustomException;
 import com.example.wewha.common.exception.ErrorCode;
+import com.example.wewha.common.repository.UserProfileRepository;
 import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.friend.FriendshipStatus;
+import com.example.wewha.friend.dto.ReceivedFriendRequestDto;
 import com.example.wewha.friend.entity.UserFriendship;
 import com.example.wewha.friend.repository.FriendshipRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FriendService {
     private final UserRepository userRepository;
     private final FriendshipRepository friendshipRepository;
+    private final UserProfileRepository userProfileRepository;
 
     @Transactional
     public UserFriendship sendFriendRequest(User requester, Long receiverId) {
@@ -45,5 +51,25 @@ public class FriendService {
                 .build();
 
         return friendshipRepository.save(friendship);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReceivedFriendRequestDto> showRequests(User currentUser) {
+        List<UserFriendship> requests = friendshipRepository
+                .findByReceiverAndStatus(currentUser, FriendshipStatus.PENDING);
+
+        // 요청이 없는 경우 빈 리스트 반환
+        if (requests.isEmpty()) {
+            return List.of();
+        }
+
+        return requests.stream()
+                .map(friendship -> {
+                    User sender = friendship.getRequester();
+                    UserProfile profile = userProfileRepository.findByUser(sender)
+                            .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
+                    return ReceivedFriendRequestDto.fromEntity(friendship, profile);
+                })
+                .toList();
     }
 }
