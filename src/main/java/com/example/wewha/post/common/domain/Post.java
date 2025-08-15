@@ -44,4 +44,8 @@ public class Post {
     @Builder.Default
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    public Long getPostId() {
+        return this.id; // 또는 this.getId();
+    }
 }
