@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import com.example.wewha.post.common.domain.User;
+import com.example.wewha.auth.entity.User;
 
 import java.time.Instant;
 
