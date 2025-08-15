@@ -7,16 +7,22 @@ import com.example.wewha.common.repository.UserProfileRepository;
 import com.example.wewha.common.entity.Language;
 import com.example.wewha.common.entity.User;
 import com.example.wewha.common.entity.UserProfile;
+import com.example.wewha.friend.FriendshipStatus;
 import com.example.wewha.friend.dto.MatchProfileRequestDto;
+import com.example.wewha.friend.dto.MatchProfileResponseDto;
+import com.example.wewha.friend.repository.FriendshipRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FriendMatchingService {
     private final LanguageRepository languageRepository;
     private final UserProfileRepository userProfileRepository;
+    private final FriendshipRepository friendshipRepository;
 
     @Transactional
     public UserProfile saveProfile(User currentUser, MatchProfileRequestDto dto) {
@@ -34,5 +40,25 @@ public class FriendMatchingService {
         UserProfile userProfile = dto.toEntity(currentUser, lang, studyLang);
         UserProfile saved = userProfileRepository.save(userProfile);
         return saved;
+    }
+
+    public List<MatchProfileResponseDto> showProfileByStudyLanguage(User currentUser, String languageName) {
+        // 1. 파라미터로 받아온 언어와 학습언어가 일치하는 유저 프로필 가져오기
+        Language studyLanguage = languageRepository.findByName(languageName)
+                .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
+        List<UserProfile> profiles = userProfileRepository.findByStudyLanguage(studyLanguage);
+
+        // 2. 친구 관계 가져오기
+        return profiles.stream()
+                .filter(profile -> !profile.getUser().equals(currentUser)) // 자기 자신 제외
+                .map(profile -> {
+                    boolean isFriendRequested = friendshipRepository.existsByRequesterAndReceiverAndStatus(
+                            currentUser, profile.getUser(), FriendshipStatus.PENDING);
+                    boolean isFriend = friendshipRepository.existsByRequesterAndReceiverAndStatus(
+                            currentUser, profile.getUser(), FriendshipStatus.ACCEPTED);
+
+                    return MatchProfileResponseDto.fromEntity(profile, isFriendRequested, isFriend);
+                })
+                .toList();
     }
 }
