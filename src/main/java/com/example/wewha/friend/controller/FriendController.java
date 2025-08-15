@@ -80,4 +80,21 @@ public class FriendController {
 
         return ResponseEntity.ok(response);
     }
+
+    // 친구 거절
+    @PostMapping("/{requestId}/reject")
+    public ResponseEntity<ApiResponse<Void>> rejectRequest(@AuthenticationPrincipal UserDetails userDetails, @PathVariable long requestId) {
+        String email = userDetails.getUsername();
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(()->new CustomException(ErrorCode.ERR_NOT_FOUND));
+
+        friendService.rejectRequest(currentUser, requestId);
+        ApiResponse<Void> response = ApiResponse.success(
+                200,
+                "친구 신청을 거절하였습니다.",
+                null
+        );
+
+        return ResponseEntity.ok(response);
+    }
 }
