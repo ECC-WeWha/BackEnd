@@ -1,6 +1,6 @@
-package com.example.wewha.auth.repository;
+package com.example.wewha.common.repository;
 
-import com.example.wewha.auth.entity.User;
+import com.example.wewha.common.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

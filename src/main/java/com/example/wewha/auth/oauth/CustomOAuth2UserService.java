@@ -1,11 +1,9 @@
 package com.example.wewha.auth.oauth;
 
-import com.example.wewha.auth.entity.User;
+import com.example.wewha.common.entity.User;
 import com.example.wewha.auth.entity.AcademicStatus;
 import com.example.wewha.auth.jwt.JwtTokenProvider;
-import com.example.wewha.auth.oauth.OAuth2UserInfo;
-import com.example.wewha.auth.oauth.OAuth2UserInfoFactory;
-import com.example.wewha.auth.repository.UserRepository;
+import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.auth.repository.AcademicStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

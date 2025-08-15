@@ -1,6 +1,6 @@
 package com.example.wewha.post.general.controller;
 
-import com.example.wewha.post.common.dto.ApiResponse;
+import com.example.wewha.common.dto.ApiResponse;
 import com.example.wewha.post.general.dto.PostCreateRequest;
 import com.example.wewha.post.general.dto.PostCreateResponse;
 import com.example.wewha.post.general.service.PostService;

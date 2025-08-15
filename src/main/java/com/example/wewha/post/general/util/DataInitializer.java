@@ -3,8 +3,8 @@ package com.example.wewha.post.general.util;
 import com.example.wewha.post.common.domain.Category;
 import com.example.wewha.post.general.repository.CategoryRepository;
 
-import com.example.wewha.auth.entity.User;
-import com.example.wewha.auth.repository.UserRepository;
+import com.example.wewha.common.entity.User;
+import com.example.wewha.common.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

@@ -1,7 +1,7 @@
 package com.example.wewha.auth.jwt;
 
-import com.example.wewha.auth.entity.User;
-import com.example.wewha.auth.repository.UserRepository;
+import com.example.wewha.common.entity.User;
+import com.example.wewha.common.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;

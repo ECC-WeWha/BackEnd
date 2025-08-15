@@ -39,6 +39,7 @@ public class AuthSecurityConfig {    // <- 클래스명 변경 (중복 방지)
                         .requestMatchers("/h2-console/**").permitAll() // H2 콘솔
                         .requestMatchers("/api/auth/**", "/oauth2/**", "/login/**").permitAll() // 인증 관련 경로
                         .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/**").permitAll() // 게시글 조회 API
+                        //.requestMatchers("/api/friend-matching/**").permitAll()  // 친구 매칭 api 테스트용
                         .anyRequest().authenticated()
                 )
 

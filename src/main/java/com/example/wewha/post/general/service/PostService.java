@@ -1,12 +1,12 @@
 package com.example.wewha.post.general.service;
 
-import com.example.wewha.auth.entity.User;
+import com.example.wewha.common.entity.User;
 import com.example.wewha.post.common.domain.Category;
 import com.example.wewha.post.common.domain.Post;
 import com.example.wewha.post.common.domain.PostImage;
 import com.example.wewha.post.general.dto.PostCreateRequest;
 import com.example.wewha.post.general.dto.PostCreateResponse;
-import com.example.wewha.auth.repository.UserRepository;
+import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.post.general.repository.CategoryRepository;
 import com.example.wewha.post.general.repository.PostImageRepository;
 import com.example.wewha.post.general.repository.PostRepository;

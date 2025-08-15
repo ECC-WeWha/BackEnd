@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: wewha
+
+  datasource:
+    url: jdbc:mysql://wewhadb.c12wo6kwwlq2.ap-northeast-2.rds.amazonaws.com:3306/wewhaDB?useSSL=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: ewha1886!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  security:
+    user:
+      name: admin
+      password: 1234
+
+jwt:
+  secret: MySuperSecretKeyThatIsAtLeast32Bytes!

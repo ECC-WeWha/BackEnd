@@ -1,7 +1,7 @@
 package com.example.wewha.users.dto;
 
-import com.example.wewha.auth.entity.User;
-import com.example.wewha.auth.entity.UserProfile;
+import com.example.wewha.common.entity.User;
+import com.example.wewha.common.entity.UserProfile;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -32,7 +32,7 @@ public class UserInfoResponse {
                 .birthYear(user.getBirthYear())
                 .year(user.getYear())
                 .status(user.getAcademicStatus().getStatusName())
-                .nationality(profile.getRegion().getName())
+                .nationality(user.getRegion().getName())
                 .major(profile.getMajor())
                 .language(profile.getLanguage().getName())
                 .studyLanguage(profile.getStudyLanguage().getName())
