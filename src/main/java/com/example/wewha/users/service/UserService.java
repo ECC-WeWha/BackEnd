@@ -3,6 +3,13 @@ package com.example.wewha.users.service;
 import com.example.wewha.auth.entity.*;
 import com.example.wewha.auth.jwt.JwtTokenProvider;
 import com.example.wewha.auth.repository.*;
+import com.example.wewha.common.entity.Language;
+import com.example.wewha.common.entity.Region;
+import com.example.wewha.common.entity.User;
+import com.example.wewha.common.entity.UserProfile;
+import com.example.wewha.common.repository.LanguageRepository;
+import com.example.wewha.common.repository.UserProfileRepository;
+import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.users.dto.UpdateUserRequest;
 import com.example.wewha.users.dto.UserInfoResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,7 +77,7 @@ public class UserService {
         if (updateRequest.getRegionId() != null) {
             Region region = regionRepository.findById(updateRequest.getRegionId())
                     .orElseThrow(() -> new RuntimeException("유효하지 않은 지역 ID"));
-            profile.setRegion(region);
+            profile.getUser().setRegion(region);
         }
 
         if (updateRequest.getLanguageId() != null) {
@@ -80,7 +87,7 @@ public class UserService {
         }
 
         if (updateRequest.getStudyLanguageId() != null) {
-            StudyLanguage studyLanguage = studyLanguageRepository.findById(updateRequest.getStudyLanguageId())
+            Language studyLanguage = languageRepository.findById(updateRequest.getStudyLanguageId())
                     .orElseThrow(() -> new RuntimeException("유효하지 않은 학습 언어 ID"));
             profile.setStudyLanguage(studyLanguage);
         }

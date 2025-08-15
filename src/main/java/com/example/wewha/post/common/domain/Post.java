@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
-import com.example.wewha.auth.entity.User;
+import com.example.wewha.common.entity.User;
 
 @Entity
 @Getter

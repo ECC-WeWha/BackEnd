@@ -1,4 +1,4 @@
-package com.example.wewha.common;
+package com.example.wewha.common.exception;
 
 import lombok.Getter;
 

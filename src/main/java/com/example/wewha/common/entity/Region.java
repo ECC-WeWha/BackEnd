@@ -1,21 +1,21 @@
-package com.example.wewha.auth.entity;
+package com.example.wewha.common.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "languages")
+@Table(name = "regions")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Language {
+public class Region {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "language_id")
-    private Long languageId;
+    @Column(name = "id")
+    private Long regionId;
 
     @Column(name = "name", nullable = false)
     private String name;

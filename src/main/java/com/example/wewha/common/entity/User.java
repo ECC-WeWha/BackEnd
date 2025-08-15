@@ -1,11 +1,12 @@
-package com.example.wewha.auth.entity;
+package com.example.wewha.common.entity;
 
+import com.example.wewha.auth.entity.AcademicStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "`User`") // 또는 name = "users"로 바꾸는 것을 추천
+@Table(name = "users") // 또는 name = "users"로 바꾸는 것을 추천
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,6 +22,10 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id", nullable = false)
+    private Region region;
+
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -31,7 +36,7 @@ public class User {
     @JoinColumn(name = "academic_status_id")
     private AcademicStatus academicStatus;
 
-    @Column(name = "year", nullable = false)
+    @Column(name = "school_year", nullable = false)
     private Integer year;
 
     @Column(name = "birth_year", nullable = false)
@@ -60,4 +65,5 @@ public class User {
     protected void onUpdate() {
         this.updatedAt = new Timestamp(System.currentTimeMillis());
     }
+
 }

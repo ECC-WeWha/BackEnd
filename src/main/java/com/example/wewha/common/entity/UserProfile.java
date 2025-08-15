@@ -1,5 +1,6 @@
-package com.example.wewha.auth.entity;
+package com.example.wewha.common.entity;
 
+import com.example.wewha.auth.entity.StudyLanguage;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,14 +26,16 @@ public class UserProfile {
     @JoinColumn(name = "language_id")
     private Language language;
 
+    /* region은 User 엔티티로..
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "region_id")
     private Region region;
+     */
 
-    @Column(name = "purpose")
+    @Column(name = "purpose", nullable = false)
     private String purpose;
 
-    @Column(name = "major")
+    @Column(name = "major", nullable = false)
     private String major;
 
     @Column(name = "korean_topic_score")
@@ -49,5 +52,5 @@ public class UserProfile {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_language_id")
-    private StudyLanguage studyLanguage;
+    private Language studyLanguage;
 }

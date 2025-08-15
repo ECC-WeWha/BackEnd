@@ -9,6 +9,13 @@ import com.example.wewha.auth.exception.AuthException;
 import com.example.wewha.auth.exception.ErrorCode;
 import com.example.wewha.auth.jwt.JwtTokenProvider;
 import com.example.wewha.auth.repository.*;
+import com.example.wewha.common.entity.Language;
+import com.example.wewha.common.entity.Region;
+import com.example.wewha.common.entity.User;
+import com.example.wewha.common.entity.UserProfile;
+import com.example.wewha.common.repository.LanguageRepository;
+import com.example.wewha.common.repository.UserProfileRepository;
+import com.example.wewha.common.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,7 +60,7 @@ public class AuthService {
         Language language = languageRepository.findById(request.getLanguageId())
                 .orElseThrow(() -> new AuthException(ErrorCode.INVALID_LANGUAGE));
 
-        StudyLanguage studyLanguage = studyLanguageRepository.findById(request.getStudyLanguageId())
+        Language studyLanguage = languageRepository.findById(request.getStudyLanguageId())
                 .orElseThrow(() -> new AuthException(ErrorCode.INVALID_STUDY_LANGUAGE));
 
         UserProfile profile = UserProfile.builder()
@@ -64,7 +71,6 @@ public class AuthService {
                 .kakaoId(request.getKakaoId())
                 .instaId(request.getInstaId())
                 .introduction(request.getIntroduction())
-                .region(region)
                 .build();
 
         userProfileRepository.save(profile);
