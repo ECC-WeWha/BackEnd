@@ -72,4 +72,23 @@ public class FriendService {
                 })
                 .toList();
     }
+
+    @Transactional
+    public UserFriendship acceptRequest(User currentUser, long requestId) {
+        UserFriendship friendship = friendshipRepository.findById(requestId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
+
+        // 수신자가 본인인지 검증
+        if (!friendship.getReceiver().getUserId().equals(currentUser.getUserId())) {
+            throw new CustomException(ErrorCode.ERR_FORBIDDEN);
+        }
+
+        // 이미 처리된 요청인지 검증
+        if (friendship.getStatus() != FriendshipStatus.PENDING) {
+            throw new CustomException(ErrorCode.ERR_CONFLICT);
+        }
+
+        friendship.setStatus(FriendshipStatus.ACCEPTED);
+        return friendshipRepository.save(friendship);
+    }
 }
