@@ -62,4 +62,22 @@ public class FriendController {
 
         return ResponseEntity.ok(response);
     }
+
+    // 친구 수락
+    @PostMapping("/{requestId}/accept")
+    public ResponseEntity<ApiResponse<FriendshipDto>> acceptRequest(@AuthenticationPrincipal UserDetails userDetails, @PathVariable long requestId) {
+        String email = userDetails.getUsername();
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(()->new CustomException(ErrorCode.ERR_NOT_FOUND));
+
+        UserFriendship friendship = friendService.acceptRequest(currentUser, requestId);
+        FriendshipDto friendshipDto = new FriendshipDto(friendship);
+        ApiResponse<FriendshipDto> response = ApiResponse.success(
+                200,
+                "친구 신청을 수락하였습니다.",
+                friendshipDto
+        );
+
+        return ResponseEntity.ok(response);
+    }
 }
