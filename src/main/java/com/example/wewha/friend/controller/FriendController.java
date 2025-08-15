@@ -7,6 +7,7 @@ import com.example.wewha.common.exception.ErrorCode;
 import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.friend.dto.FriendRequestDto;
 import com.example.wewha.friend.dto.FriendshipDto;
+import com.example.wewha.friend.dto.ReceivedFriendRequestDto;
 import com.example.wewha.friend.entity.UserFriendship;
 import com.example.wewha.friend.service.FriendService;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,5 +44,22 @@ public class FriendController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    // 받은 친구 신청 조회
+    @GetMapping("/received")
+    public ResponseEntity<ApiResponse<List<ReceivedFriendRequestDto>>> showRequests(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(()->new CustomException(ErrorCode.ERR_NOT_FOUND));
+
+        List<ReceivedFriendRequestDto> receivedList = friendService.showRequests(currentUser);
+        ApiResponse<List<ReceivedFriendRequestDto>> response = ApiResponse.success(
+                200,
+                "받은 친구 신청 목록이 성공적으로 조회되었습니다.",
+                receivedList
+        );
+
+        return ResponseEntity.ok(response);
     }
 }
