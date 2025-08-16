@@ -48,5 +48,4 @@ public class Post {
     public Long getPostId() {
         return this.id; // 또는 this.getId();
     }
-
 }
