@@ -14,6 +14,8 @@ import java.sql.Timestamp;
 @Builder
 public class User {
 
+    // 또는 getId();
+    // 또는 getId();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")

@@ -2,12 +2,12 @@ package com.example.wewha;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+
 public class WewhaApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(WewhaApplication.class, args);
-	}
+	public static void main(String[] args) {SpringApplication.run(WewhaApplication.class, args);}
 
 }
