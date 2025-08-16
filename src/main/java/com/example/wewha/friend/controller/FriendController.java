@@ -6,14 +6,18 @@ import com.example.wewha.common.exception.CustomException;
 import com.example.wewha.common.exception.ErrorCode;
 import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.friend.dto.FriendRequestDto;
+import com.example.wewha.friend.dto.FriendSummaryResponse;
 import com.example.wewha.friend.dto.FriendshipDto;
 import com.example.wewha.friend.dto.ReceivedFriendRequestDto;
 import com.example.wewha.friend.entity.UserFriendship;
 import com.example.wewha.friend.service.FriendService;
+import com.example.wewha.friend.service.FriendsQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +30,17 @@ public class FriendController {
 
     private final UserRepository userRepository;
     private final FriendService friendService;
+    private final FriendsQueryService service;
+
+    private Long currentUserId() {
+        Authentication a = SecurityContextHolder.getContext().getAuthentication();
+        if (a == null) throw new RuntimeException("Unauthenticated");
+        Object p = a.getPrincipal();
+        if (p instanceof Long l) return l;
+        if (p instanceof String s) return Long.valueOf(s);
+        if (p instanceof UserDetails ud) return Long.valueOf(ud.getUsername());
+        throw new RuntimeException("Cannot resolve userId");
+    }
 
     // 친구 신청
     @PostMapping
@@ -97,4 +112,12 @@ public class FriendController {
 
         return ResponseEntity.ok(response);
     }
+
+    /** 내 친구 목록 조회 */
+    @GetMapping
+    public ResponseEntity<List<FriendSummaryResponse>> myFriends() {
+        Long me = currentUserId();
+        return ResponseEntity.ok(service.list(me));
+    }
+
 }
