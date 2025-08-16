@@ -6,12 +6,12 @@ import com.example.wewha.comments.dto.comment.UpdateCommentRequest;
 import com.example.wewha.comments.dto.comment.CreateCommentRequest;
 import com.example.wewha.comments.entity.Comment;
 import com.example.wewha.post.common.domain.Post;
-import com.example.wewha.auth.entity.User;
+import com.example.wewha.common.entity.User;
 import com.example.wewha.comments.exception.ForbiddenException;
 import com.example.wewha.comments.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import com.example.wewha.post.general.repository.PostRepository;
-import com.example.wewha.auth.repository.UserRepository;
+import com.example.wewha.common.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
