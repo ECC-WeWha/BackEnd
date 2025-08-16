@@ -1,4 +1,4 @@
-package com.example.wewha.comments.exception;
+package com.example.wewha.common.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String target) {

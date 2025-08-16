@@ -8,7 +8,7 @@ import com.example.wewha.comments.entity.Comment;
 import com.example.wewha.comments.entity.CommentLike;
 import com.example.wewha.post.common.domain.Post;
 import com.example.wewha.common.entity.User;
-import com.example.wewha.comments.exception.NotFoundException;
+import com.example.wewha.common.exception.NotFoundException;
 import com.example.wewha.common.exception.ForbiddenException;
 import com.example.wewha.comments.repository.CommentLikeRepository;
 import com.example.wewha.comments.repository.CommentRepository;
