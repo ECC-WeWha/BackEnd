@@ -4,8 +4,4 @@ public class NotFoundException extends RuntimeException {
     public NotFoundException(String target) {
         super(target + " not found");
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/BE/comments-post

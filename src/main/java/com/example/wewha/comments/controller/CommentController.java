@@ -2,10 +2,7 @@ package com.example.wewha.comments.controller;
 
 import com.example.wewha.comments.dto.comment.CommentResponse;
 import com.example.wewha.comments.dto.comment.CreateCommentRequest;
-<<<<<<< HEAD
 import com.example.wewha.comments.dto.comment.UpdateCommentRequest;
-=======
->>>>>>> origin/BE/comments-post
 import com.example.wewha.comments.security.SecurityUtils;
 import com.example.wewha.comments.service.CommentService;
 import jakarta.validation.Valid;
@@ -35,7 +32,6 @@ public class CommentController {
         Long userId = requireUserId(); // 또는 @RequestHeader("X-USER-ID") Long userId (임시)
         return ResponseEntity.ok(commentService.create(userId, req));
     }
-<<<<<<< HEAD
 
     /** PATCH /api/comments/{commentId} */
     @PatchMapping("/{commentId}")
@@ -46,7 +42,4 @@ public class CommentController {
         Long userId = requireUserId();
         return ResponseEntity.ok(commentService.update(userId, commentId, req));
     }
-
-=======
->>>>>>> origin/BE/comments-post
 }
