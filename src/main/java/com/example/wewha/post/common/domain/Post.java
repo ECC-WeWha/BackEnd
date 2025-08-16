@@ -45,8 +45,13 @@ public class Post {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+<<<<<<< HEAD
 
     public Long getPostId() {
         return this.id;
+=======
+    public Long getPostId() {
+        return this.id; // 또는 this.getId();
+>>>>>>> origin/BE/comments-post
     }
 }
