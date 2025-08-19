@@ -3,9 +3,9 @@ spring:
     name: wewha
 
   datasource:
-    url: jdbc:mysql://wewhadb.c12wo6kwwlq2.ap-northeast-2.rds.amazonaws.com:3306/wewhaDB?useSSL=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: ewha1886!
+    url: jdbc:mysql://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
