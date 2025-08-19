@@ -3,11 +3,9 @@ package com.example.wewha.comments.dto.comment;
 import java.time.Instant;
 
 public record CommentResponse(
-        Long id,
+        Long commentId,
         Long postId,
-        Long authorId,
+        Long author,
         String content,
-        Instant createdAt,
-        Instant updatedAt,
-        int likeCount
+        Instant createdAt
 ) {}
