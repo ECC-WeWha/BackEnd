@@ -18,5 +18,8 @@ spring:
       name: admin
       password: 1234
 
+  server:
+    port: 5000
+
 jwt:
   secret: MySuperSecretKeyThatIsAtLeast32Bytes!
