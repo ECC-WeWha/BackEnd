@@ -20,11 +20,4 @@ public class SignupRequest {
     private Integer birthYear; // 년생
     private Long regionId; // 국적 (user_profiles 테이블에 저장됨)
 
-    // UserProfiles 테이블 필드
-    private String major;
-    private Long languageId; // 모국어
-    private Long studyLanguageId; // 학습언어
-    private String kakaoId;
-    private String instaId;
-    private String introduction;
 }
