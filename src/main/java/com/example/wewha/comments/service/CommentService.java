@@ -1,5 +1,6 @@
 package com.example.wewha.comments.service;
 
+import com.example.wewha.comments.dto.comment.UpdateCommentRequest;
 import com.example.wewha.comments.entity.Comment;
 import com.example.wewha.comments.dto.comment.CreateCommentRequest;
 import com.example.wewha.comments.dto.comment.CommentResponse;
@@ -43,5 +44,24 @@ public class CommentService {
                         .build()
         );
         return CommentResponse.of(saved);
+    }
+    @Transactional
+    public CommentResponse update(Long userId, Long commentId, UpdateCommentRequest req) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("댓글을 찾을 수 없습니다."));
+
+        // 작성자만 수정 가능
+        if (!comment.getUser().getUserId().equals(userId)) {
+            throw new SecurityException("수정 권한이 없습니다."); // 403으로 매핑 추천
+        }
+
+        String content = req.getContent() == null ? "" : req.getContent().trim();
+        if (content.isEmpty()) {
+            throw new IllegalArgumentException("요청 형식이 올바르지 않습니다."); // 400으로 매핑
+        }
+
+        comment.changeContent(content);  // dirty checking
+        // @UpdateTimestamp가 updatedAt 업데이트 처리
+        return CommentResponse.of(comment);
     }
 }
