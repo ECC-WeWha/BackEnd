@@ -34,18 +34,23 @@ public class Post {
     private String content;
 
     @Builder.Default // 빌더 사용 시 기본값 설정을 위함
-    @Column(name = "like_count", nullable = false)
+    @Column(name = "like_count")
     private int likeCount = 0;
 
     @Builder.Default
-    @Column(name = "scrap_count", nullable = false)
+    @Column(name = "scrap_count")
     private int scrapCount = 0;
 
     @Builder.Default
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at",nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Builder.Default
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     public Long getPostId() {
         return this.id; // 또는 this.getId();
     }
+
 }

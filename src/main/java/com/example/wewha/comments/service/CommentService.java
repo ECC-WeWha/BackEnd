@@ -1,85 +1,47 @@
 package com.example.wewha.comments.service;
 
-import com.example.wewha.comments.dto.comment.CommentResponse;
-import com.example.wewha.comments.exception.NotFoundException;
-import com.example.wewha.comments.dto.comment.UpdateCommentRequest;
-import com.example.wewha.comments.dto.comment.CreateCommentRequest;
 import com.example.wewha.comments.entity.Comment;
-import com.example.wewha.post.common.domain.Post;
-import com.example.wewha.common.entity.User;
-import com.example.wewha.comments.exception.ForbiddenException;
+import com.example.wewha.comments.dto.comment.CreateCommentRequest;
+import com.example.wewha.comments.dto.comment.CommentResponse;
 import com.example.wewha.comments.repository.CommentRepository;
-import lombok.RequiredArgsConstructor;
-import com.example.wewha.post.general.repository.PostRepository;
+import com.example.wewha.common.entity.User;
 import com.example.wewha.common.repository.UserRepository;
+import com.example.wewha.post.common.domain.Post;
+import com.example.wewha.post.general.repository.PostRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class CommentService {
 
-    private final CommentRepository commentRepo;
-    private final PostRepository postRepo;
-    private final UserRepository userRepo;
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
+    @Transactional
     public CommentResponse create(Long userId, CreateCommentRequest req) {
-        Post post = postRepo.findById(req.postId())
-                .orElseThrow(() -> new NotFoundException("post"));
-        User author = userRepo.getReferenceById(userId);
+        // 게시글/사용자 존재 확인
+        Post post = postRepository.findById(req.getPostId())
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
 
-        Comment c = new Comment();
-        c.setPost(post);
-        c.setAuthor(author);
-        c.setContent(req.content().trim());
-
-        Comment saved = commentRepo.save(c);
-        return new CommentResponse(
-                saved.getCommentId(),
-                saved.getPost().getPostId(),
-                saved.getAuthor().getUserId(),
-                saved.getContent(),
-                saved.getCreatedAt(),
-                saved.getUpdatedAt(),
-                saved.getLikeCount()
-        );
-    }
-    /** 댓글 수정: 작성자 본인만 가능 */
-    public CommentResponse update(Long userId, Long commentId, UpdateCommentRequest req) {
-        Comment c = commentRepo.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("comment"));
-
-        if (!Objects.equals(c.getAuthor().getUserId(), userId)) {
-            throw new ForbiddenException("작성자만 수정할 수 있습니다.");
+        String content = req.getContent() == null ? "" : req.getContent().trim();
+        if (content.isEmpty()) {
+            throw new IllegalArgumentException("요청 형식이 올바르지 않습니다."); // 400으로 매핑 예정
         }
 
-        c.setContent(req.content().trim());
-
-        // JPA dirty checking으로 업데이트 반영
-        return new CommentResponse(
-                c.getCommentId(),
-                c.getPost().getPostId(),
-                c.getAuthor().getUserId(),
-                c.getContent(),
-                c.getCreatedAt(),
-                c.getUpdatedAt(),
-                c.getLikeCount()
+        Comment saved = commentRepository.save(
+                Comment.builder()
+                        .post(post)
+                        .user(user)
+                        .content(content)
+                        .build()
         );
-    }
-    public void delete(Long userId, Long commentId, boolean isAdmin) {
-        Comment c = commentRepo.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("comment"));
-
-        // 작성자이거나 관리자만 삭제 허용
-        Long authorId = c.getAuthor().getUserId();
-        if (!isAdmin && (authorId == null || !authorId.equals(userId))) {
-            throw new ForbiddenException("작성자만 삭제할 수 있습니다.");
-        }
-
-        // comment_likes가 FK ON DELETE CASCADE면 이것만으로 정리됨
-        commentRepo.delete(c);
+        return CommentResponse.of(saved);
     }
 }

@@ -1,49 +1,42 @@
 package com.example.wewha.comments.entity;
 
+import com.example.wewha.common.entity.User;
+import com.example.wewha.post.common.domain.Post;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import com.example.wewha.post.common.domain.Post;
-import com.example.wewha.common.entity.User;
 
-import java.time.Instant;
-
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "Comment") // 실제 테이블명이 comments면 "comments"로 변경
+@Table(name = "Comment")
 public class Comment {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private Long commentId;
+    private Long id;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // FK → Post.post_id
     @JoinColumn(name = "post_id", nullable = false)
-    private Post post;   // 프로젝트의 Post 엔티티 import 경로에 맞춰주세요
+    private Post post;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // FK → User.user_id
     @JoinColumn(name = "author_id", nullable = false)
-    private User author; // 프로젝트의 User 엔티티 import 경로에 맞춰주세요
+    private User user;
 
-    @Lob
-    @Column(name = "content", nullable = false)
+    @Column(nullable = false, length = 2000)
     private String content;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    @Column(name = "like_count", nullable = false)
-    private int likeCount = 0;
+    private LocalDateTime updatedAt;
 }

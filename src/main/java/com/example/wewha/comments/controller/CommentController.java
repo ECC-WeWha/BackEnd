@@ -2,18 +2,15 @@ package com.example.wewha.comments.controller;
 
 import com.example.wewha.comments.dto.comment.CommentResponse;
 import com.example.wewha.comments.dto.comment.CreateCommentRequest;
-import com.example.wewha.comments.dto.comment.UpdateCommentRequest;
-import com.example.wewha.comments.security.SecurityUtils;
 import com.example.wewha.comments.service.CommentService;
+import com.example.wewha.common.dto.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * 댓글 등록 API
- * POST /api/comments
- */
 @RestController
 @RequestMapping("/api/comments")
 @RequiredArgsConstructor
@@ -21,35 +18,16 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    private Long requireUserId() {
-        Long uid = SecurityUtils.currentUserIdOrNull();
-        if (uid == null) throw new RuntimeException("인증 정보가 없습니다.");
-        return uid;
-    }
-
     @PostMapping
-    public ResponseEntity<CommentResponse> create(@Valid @RequestBody CreateCommentRequest req) {
-        Long userId = requireUserId(); // 또는 @RequestHeader("X-USER-ID") Long userId (임시)
-        return ResponseEntity.ok(commentService.create(userId, req));
-    }
-
-    /** PATCH /api/comments/{commentId} */
-    @PatchMapping("/{commentId}")
-    public ResponseEntity<CommentResponse> update(
-            @PathVariable Long commentId,
-            @Valid @RequestBody UpdateCommentRequest req
+    public ResponseEntity<ApiResponse<CommentResponse>> create(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody CreateCommentRequest req
     ) {
-        Long userId = requireUserId();
-        return ResponseEntity.ok(commentService.update(userId, commentId, req));
-    }
+        // TODO: 인증 연동 후 userId를 SecurityContext/JWT에서 추출
+        Long userId = 1L;
 
-    /** DELETE /api/comments/{commentId} */
-    @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> delete(@PathVariable Long commentId) {
-        Long userId = requireUserId();
-        boolean isAdmin = SecurityUtils.hasRole("ADMIN"); // 권한 없으면 false
-        commentService.delete(userId, commentId, isAdmin);
-        return ResponseEntity.noContent().build();
+        CommentResponse data = commentService.create(userId, req);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>(201, "댓글이 성공적으로 등록되었습니다.", data));
     }
-
 }
