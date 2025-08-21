@@ -14,20 +14,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Comment",
-        indexes = { @Index(name = "idx_comments_post", columnList = "post_id") })
+@Table(name = "Comment")
 public class Comment {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)   // ✅ Post의 PK 컬럼명과 일치
+    @ManyToOne(fetch = FetchType.LAZY) // FK → Post.post_id
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)   // ✅ User의 PK 컬럼명과 일치
+    @ManyToOne(fetch = FetchType.LAZY) // FK → User.user_id
+    @JoinColumn(name = "author_id", nullable = false)
     private User user;
 
     @Column(nullable = false, length = 2000)

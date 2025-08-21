@@ -1,7 +1,7 @@
 package com.example.wewha.comments.controller;
 
-import com.example.wewha.comments.dto.comment.CreateCommentRequest;
 import com.example.wewha.comments.dto.comment.CommentResponse;
+import com.example.wewha.comments.dto.comment.CreateCommentRequest;
 import com.example.wewha.comments.service.CommentService;
 import com.example.wewha.common.dto.ApiResponse;
 import jakarta.validation.Valid;
