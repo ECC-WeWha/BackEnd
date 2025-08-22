@@ -3,6 +3,8 @@ package com.example.wewha.post.common.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.example.wewha.common.entity.User;
 
@@ -32,6 +34,18 @@ public class Post {
     @Lob
     @Column(nullable = false)
     private String content;
+
+    @Builder.Default
+    @Column(name = "is_anonymous")
+    private boolean isAnonymous = false;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImage> postImages = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostKeyword> postKeywords = new ArrayList<>();
 
     @Builder.Default // 빌더 사용 시 기본값 설정을 위함
     @Column(name = "like_count", nullable = false)

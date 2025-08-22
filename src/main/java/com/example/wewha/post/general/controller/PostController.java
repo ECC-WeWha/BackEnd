@@ -6,13 +6,16 @@ import com.example.wewha.post.general.dto.PostCreateResponse;
 import com.example.wewha.post.general.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -21,20 +24,17 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<PostCreateResponse>> createPost(
-            // @AuthenticationPrincipal은 실제 기능 구현 전까지 사용되지 않습니다.
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody PostCreateRequest request) {
+            @RequestPart("postData") PostCreateRequest request,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
 
-        // TODO: 사용자 인증 기능 완성 후, 실제 로그인된 사용자 ID를 사용하도록 수정해야 합니다.
-        // 현재는 테스트를 위해 임시 ID(1번)를 사용합니다.
-        Long tempUserId = 1L;
+        // --- 여기를 수정했습니다 ---
+        String userEmail = userDetails.getUsername();
 
-        PostCreateResponse responseData = postService.createPost(tempUserId, request);
-
+        PostCreateResponse responseData = postService.createPost(userEmail, request, images);
         ApiResponse<PostCreateResponse> response = new ApiResponse<>(201, "게시글이 성공적으로 등록되었습니다.", responseData);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
