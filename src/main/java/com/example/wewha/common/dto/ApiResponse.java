@@ -1,4 +1,4 @@
-package com.example.wewha.post.common.dto;
+package com.example.wewha.common.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

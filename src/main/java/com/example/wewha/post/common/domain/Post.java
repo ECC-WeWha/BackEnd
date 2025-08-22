@@ -8,12 +8,14 @@ import java.util.List;
 
 import com.example.wewha.common.entity.User;
 
+import com.example.wewha.common.entity.User;
+
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(name = "post")
+@Table(name = "Post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +33,8 @@ public class Post {
     @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Lob
+    @Column(nullable = false)
     private String content;
 
     @Builder.Default

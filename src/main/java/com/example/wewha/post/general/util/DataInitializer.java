@@ -9,14 +9,15 @@ import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.post.common.domain.Category;
 import com.example.wewha.post.common.domain.Post;
 import com.example.wewha.post.common.domain.PostImage;
-import com.example.wewha.post.common.domain.User;
 import com.example.wewha.post.general.repository.CategoryRepository;
+import com.example.wewha.post.general.repository.PostImageRepository;
+import com.example.wewha.post.general.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import java.util.List;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class DataInitializer {
     // 1. User를 만들기 위해 필요한 Repository들을 주입받습니다.
     private final RegionRepository regionRepository;
     private final AcademicStatusRepository academicStatusRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public CommandLineRunner initData() {
@@ -102,7 +104,6 @@ public class DataInitializer {
             postRepository.save(Post.builder().user(user2).category(catFood).title("성수동 카페 추천해주세요").content("디저트 맛있는 곳으로 부탁드립니다.").build());
             postRepository.save(Post.builder().user(user3).category(catTravel).title("겨울에 갈만한 국내 여행지").content("따뜻한 남쪽으로 가고 싶어요.").build());
             postRepository.save(Post.builder().user(user1).category(catDev).title("코딩 테스트 준비 시작").content("하루에 한 문제씩 풀어보려고 합니다.").build());
-
         };
     }
 }
