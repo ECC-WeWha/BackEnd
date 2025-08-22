@@ -21,11 +21,19 @@ public class PostDetailResponse {
     private final LocalDateTime createdAt;
 
     public PostDetailResponse(Post post) {
-        this.userId = post.getUser().getId();
+        this.userId = post.getUser().getUserId();
         this.postId = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.author = post.getUser().getNickname();
+
+        // 요청 사항 반영: 익명 여부에 따라 작성자 필드를 변경합니다.
+        // Post 엔티티에 isAnonymous() 필드가 존재한다고 가정합니다.
+        if (post.isAnonymous()) {
+            this.author = "익명";
+        } else {
+            this.author = post.getUser().getNickname();
+        }
+
         this.category = post.getCategory().getName();
         this.imageUrls = post.getImages().stream()
                 .map(PostImage::getImageUrl)

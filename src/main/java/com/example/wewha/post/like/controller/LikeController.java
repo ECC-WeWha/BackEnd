@@ -1,6 +1,6 @@
 package com.example.wewha.post.like.controller;
 
-import com.example.wewha.post.common.dto.ApiResponse;
+import com.example.wewha.common.dto.ApiResponse;
 import com.example.wewha.post.like.dto.LikeResponse;
 import com.example.wewha.post.like.service.LikeService;
 import lombok.RequiredArgsConstructor;

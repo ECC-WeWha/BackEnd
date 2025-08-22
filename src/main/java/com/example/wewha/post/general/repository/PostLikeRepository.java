@@ -2,7 +2,7 @@ package com.example.wewha.post.general.repository;
 
 import com.example.wewha.post.common.domain.Post;
 import com.example.wewha.post.common.domain.PostLike;
-import com.example.wewha.post.common.domain.User;
+import com.example.wewha.common.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

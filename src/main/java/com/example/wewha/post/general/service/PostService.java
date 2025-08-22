@@ -3,8 +3,7 @@ package com.example.wewha.post.general.service;
 import com.example.wewha.common.entity.User;
 import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.post.common.domain.*;
-import com.example.wewha.post.general.dto.PostCreateRequest;
-import com.example.wewha.post.general.dto.PostCreateResponse;
+import com.example.wewha.post.general.dto.*;
 import com.example.wewha.post.general.repository.*;
 import com.example.wewha.post.common.domain.Category;
 import com.example.wewha.post.common.domain.Post;
@@ -12,7 +11,10 @@ import com.example.wewha.post.common.domain.PostImage;
 import com.example.wewha.post.general.repository.CategoryRepository;
 import com.example.wewha.post.general.repository.PostImageRepository;
 import com.example.wewha.post.general.repository.PostRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,5 +79,54 @@ public class PostService {
         }
 
         return PostCreateResponse.of(savedPost, imageUrls, keywords);
+    }
+    @Transactional
+    public PostUpdateResponse updatePost(Long postId, PostUpdateRequest request) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+
+        // TODO: 로그인한 사용자가 게시글의 작성자인지 확인하는 로직 필요
+        // 나중에 할게용 ..
+
+        post.update(request.getTitle(), request.getContent());
+
+        // 변경된 post 객체로 응답 DTO를 생성하여 반환
+        return new PostUpdateResponse(post);
+    }
+
+    @Transactional
+    public void deletePost(Long postId) {
+        // 1. ID를 사용해 기존 게시글을 데이터베이스에서 찾아옵니다.
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+
+        // TODO: 로그인한 사용자가 게시글의 작성자인지 확인하는 로직 필요
+
+        // 2. 찾아온 게시글을 삭제합니다.
+        postRepository.delete(post);
+    }
+
+    @Transactional(readOnly = true) // 조회 기능이므로 readOnly = true
+    public Page<PostSummaryResponse> getPosts(String category, Pageable pageable) {
+        Page<Post> posts;
+        if (category != null && !category.isEmpty()) {
+            // 카테고리 필터가 있는 경우
+            posts = postRepository.findByCategory_Name(category, pageable);
+        } else {
+            // 카테고리 필터가 없는 경우 (전체 조회)
+            posts = postRepository.findAll(pageable);
+        }
+        // Page<Post>를 Page<PostSummaryResponse>로 변환하여 반환
+        return posts.map(PostSummaryResponse::new);
+    }
+
+    @Transactional(readOnly = true)
+    public PostDetailResponse getPostDetail(Long postId) {
+        // 1. ID로 게시글을 찾아옵니다. 없으면 예외를 발생시킵니다.
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+
+        // 2. 찾아온 Post 엔티티를 PostDetailResponse DTO로 변환하여 반환합니다.
+        return new PostDetailResponse(post);
     }
 }

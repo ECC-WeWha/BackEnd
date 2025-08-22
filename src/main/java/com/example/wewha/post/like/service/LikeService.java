@@ -2,9 +2,9 @@ package com.example.wewha.post.like.service;
 
 import com.example.wewha.post.common.domain.Post;
 import com.example.wewha.post.common.domain.PostLike;
-import com.example.wewha.post.common.domain.User;
+import com.example.wewha.common.entity.User;
 import com.example.wewha.post.general.repository.PostRepository;
-import com.example.wewha.post.general.repository.UserRepository;
+import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.post.general.repository.PostLikeRepository;
 import com.example.wewha.post.like.dto.LikeResponse;
 import jakarta.persistence.EntityNotFoundException;

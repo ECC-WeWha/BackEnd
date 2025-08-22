@@ -1,5 +1,6 @@
 package com.example.wewha.post.common.domain;
 
+import com.example.wewha.common.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
