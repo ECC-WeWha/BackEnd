@@ -4,7 +4,7 @@ import com.example.wewha.comments.dto.comment.CommentResponse;
 import com.example.wewha.comments.dto.comment.CreateCommentRequest;
 import com.example.wewha.comments.service.CommentService;
 import com.example.wewha.common.dto.ApiResponse;
-import com.sun.security.auth.UserPrincipal;
+import com.example.wewha.comments.dto.comment.UpdateCommentRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -45,4 +45,18 @@ public class CommentController {
         commentService.delete(userId, commentId);
         return ResponseEntity.ok(new ApiResponse<>(200, "댓글이 성공적으로 삭제되었습니다.", null));
     }
+    // PATCH /api/comments/{commentId}
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<ApiResponse<CommentResponse>> update(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody UpdateCommentRequest req
+    ) {
+        // TODO: 인증 연동 후 userId는 Security/JWT에서 추출
+        Long userId = 1L;
+
+        CommentResponse data = commentService.update(userId, commentId, req);
+        return ResponseEntity.ok(new ApiResponse<>(200, "댓글이 성공적으로 수정되었습니다.", data));
+    }
 }
+

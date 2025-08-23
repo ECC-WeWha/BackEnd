@@ -39,4 +39,9 @@ public class Comment {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public void changeContent(String newContent) {
+        this.content = newContent;  // @UpdateTimestamp로 updatedAt 자동 갱신
+    }
+
 }
