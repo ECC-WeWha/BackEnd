@@ -2,6 +2,7 @@ package com.example.wewha.comments.controller;
 
 import com.example.wewha.comments.dto.comment.CommentResponse;
 import com.example.wewha.comments.dto.comment.CreateCommentRequest;
+import com.example.wewha.comments.dto.comment.UpdateCommentRequest;
 import com.example.wewha.comments.service.CommentService;
 import com.example.wewha.common.dto.ApiResponse;
 import jakarta.validation.Valid;
@@ -29,5 +30,19 @@ public class CommentController {
         CommentResponse data = commentService.create(userId, req);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(201, "댓글이 성공적으로 등록되었습니다.", data));
+    }
+
+    // PATCH /api/comments/{commentId}
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<ApiResponse<CommentResponse>> update(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody UpdateCommentRequest req
+    ) {
+        // TODO: 인증 연동 후 userId는 Security/JWT에서 추출
+        Long userId = 1L;
+
+        CommentResponse data = commentService.update(userId, commentId, req);
+        return ResponseEntity.ok(new ApiResponse<>(200, "댓글이 성공적으로 수정되었습니다.", data));
     }
 }
