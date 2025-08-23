@@ -1,4 +1,4 @@
-package com.example.wewha.post.general.repository;
+package com.example.wewha.post.common.repository;
 
 import com.example.wewha.post.common.domain.Post;
 import com.example.wewha.post.common.domain.PostLike;

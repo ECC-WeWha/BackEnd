@@ -25,6 +25,8 @@ public class AuthSecurityConfig {    // <- 클래스명 변경 (중복 방지)
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -39,6 +41,10 @@ public class AuthSecurityConfig {    // <- 클래스명 변경 (중복 방지)
                         .requestMatchers("/h2-console/**").permitAll() // H2 콘솔
                         .requestMatchers("/api/auth/**", "/oauth2/**", "/login/**").permitAll() // 인증 관련 경로
                         .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/**").permitAll() // 게시글 조회 API
+                        // 생성(POST), 수정(PATCH), 삭제(DELETE)는 인증된 사용자만 가능
+                        .requestMatchers(HttpMethod.POST, "/api/posts", "/api/national-posts").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/posts/**", "/api/national-posts/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/posts/**", "/api/national-posts/**").authenticated()
                         //.requestMatchers("/api/friend-matching/**").permitAll()  // 친구 매칭 api 테스트용
                         .anyRequest().authenticated()
                 )
@@ -49,7 +55,7 @@ public class AuthSecurityConfig {    // <- 클래스명 변경 (중복 방지)
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 )
                 */
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -1,4 +1,4 @@
-package com.example.wewha.post.general.dto;
+package com.example.wewha.post.common.dto;
 
 import com.example.wewha.post.common.domain.Post;
 import lombok.Getter;

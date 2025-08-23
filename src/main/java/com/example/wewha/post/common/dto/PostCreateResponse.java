@@ -1,4 +1,4 @@
-package com.example.wewha.post.general.dto;
+package com.example.wewha.post.common.dto;
 
 import com.example.wewha.post.common.domain.Post;
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class PostCreateResponse {
         response.title = post.getTitle();
         response.content = post.getContent();
         response.author = post.isAnonymous() ? "익명" : post.getUser().getNickname();
-        response.category = post.getCategory().getName();
+        response.category = post.getCategory().getCategoryName();
         response.imageUrls = imageUrls;
         response.keywords = keywords;
         response.likeCount = post.getLikeCount();

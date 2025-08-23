@@ -1,4 +1,4 @@
-package com.example.wewha.post.general.repository;
+package com.example.wewha.post.common.repository;
 
 import com.example.wewha.post.common.domain.PostKeyword;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.example.wewha.post.general.dto;
+package com.example.wewha.post.common.dto;
 
 import com.example.wewha.post.common.domain.Post;
 import com.example.wewha.post.common.domain.PostImage;
@@ -34,7 +34,7 @@ public class PostDetailResponse {
             this.author = post.getUser().getNickname();
         }
 
-        this.category = post.getCategory().getName();
+        this.category = post.getCategory().getCategoryName();
         this.imageUrls = post.getImages().stream()
                 .map(PostImage::getImageUrl)
                 .collect(Collectors.toList());

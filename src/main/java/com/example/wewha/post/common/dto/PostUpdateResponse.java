@@ -1,4 +1,4 @@
-package com.example.wewha.post.general.dto;
+package com.example.wewha.post.common.dto;
 
 import com.example.wewha.post.common.domain.Post;
 import com.example.wewha.post.common.domain.PostImage;
@@ -20,13 +20,13 @@ public class PostUpdateResponse {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public PostUpdateResponse(Post post) {
+    public PostUpdateResponse (Post post) {
         this.userId = post.getUser().getUserId();
         this.postId = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.author = post.getUser().getNickname();
-        this.category = post.getCategory().getName();
+        this.category = post.getCategory().getCategoryName();
         this.imageUrls = post.getImages().stream()
                 .map(PostImage::getImageUrl)
                 .collect(Collectors.toList());
