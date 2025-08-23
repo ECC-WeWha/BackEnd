@@ -43,4 +43,5 @@ public class Comment {
     public void changeContent(String newContent) {
         this.content = newContent;  // @UpdateTimestamp로 updatedAt 자동 갱신
     }
+
 }
