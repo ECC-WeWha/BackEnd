@@ -62,6 +62,12 @@ public class FriendController {
         throw new RuntimeException("Cannot resolve userId");
     }
 
+    private User currentUser() {
+        Long id = currentUserId(); // 이미 email → userId까지 안전 처리됨
+        return userRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
+    }
+
     // 친구 신청
     @PostMapping
     public ResponseEntity<ApiResponse<FriendshipDto>> sendFriendRequestRequest(@AuthenticationPrincipal UserDetails userDetails, @RequestBody FriendRequestDto dto) {

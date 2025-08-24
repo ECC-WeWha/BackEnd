@@ -7,6 +7,7 @@ import com.example.wewha.common.exception.ErrorCode;
 import com.example.wewha.common.repository.UserProfileRepository;
 import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.friend.FriendshipStatus;
+import com.example.wewha.friend.dto.FriendContactResponse;
 import com.example.wewha.friend.dto.ReceivedFriendRequestDto;
 import com.example.wewha.friend.entity.UserFriendship;
 import com.example.wewha.friend.repository.FriendshipRepository;
@@ -109,5 +110,20 @@ public class FriendService {
 
         friendship.setStatus(FriendshipStatus.REJECTED);
         friendshipRepository.save(friendship);
+    }
+
+    /** 두 사용자 사이가 ACCEPTED 친구인지 검사 (User 타입만 사용) */
+    @Transactional(readOnly = true)
+    public boolean areFriends(User a, User b) {
+        return friendshipRepository.existsByRequesterAndReceiverAndStatus(a, b, FriendshipStatus.ACCEPTED)
+                || friendshipRepository.existsByRequesterAndReceiverAndStatus(b, a, FriendshipStatus.ACCEPTED);
+    }
+
+    /** 친구 연락처 조회 (없으면 null-safe) */
+    @Transactional(readOnly = true)
+    public FriendContactResponse getFriendContact(User friend) {
+        return userProfileRepository.findByUser(friend)
+                .map(p -> new FriendContactResponse(p.getKakaoId(), p.getInstaId()))
+                .orElse(new FriendContactResponse(null, null));
     }
 }
