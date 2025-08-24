@@ -7,6 +7,8 @@ import com.example.wewha.common.exception.ErrorCode;
 import com.example.wewha.common.repository.UserProfileRepository;
 import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.friend.FriendshipStatus;
+import com.example.wewha.friend.dto.FriendContactResponse;
+import com.example.wewha.friend.dto.FriendProfileDetailResponse;
 import com.example.wewha.friend.dto.ReceivedFriendRequestDto;
 import com.example.wewha.friend.entity.UserFriendship;
 import com.example.wewha.friend.repository.FriendshipRepository;
@@ -109,5 +111,35 @@ public class FriendService {
 
         friendship.setStatus(FriendshipStatus.REJECTED);
         friendshipRepository.save(friendship);
+    }
+
+    /** 두 사용자 사이가 ACCEPTED 친구인지 검사 (User 타입만 사용) */
+    @Transactional(readOnly = true)
+    public boolean areFriends(User a, User b) {
+        return friendshipRepository.existsByRequesterAndReceiverAndStatus(a, b, FriendshipStatus.ACCEPTED)
+                || friendshipRepository.existsByRequesterAndReceiverAndStatus(b, a, FriendshipStatus.ACCEPTED);
+    }
+
+    /** 친구 연락처 조회 (없으면 null-safe) */
+    @Transactional(readOnly = true)
+    public FriendContactResponse getFriendContact(User friend) {
+        return userProfileRepository.findByUser(friend)
+                .map(p -> new FriendContactResponse(p.getKakaoId(), p.getInstaId()))
+                .orElse(new FriendContactResponse(null, null));
+    }
+
+    /** 대상 유저의 프로필 상세 조회 (없으면 CustomException NOT_FOUND) */
+    @Transactional(readOnly = true)
+    public FriendProfileDetailResponse getProfileView(User target) {
+        UserProfile profile = userProfileRepository.findByUser(target)
+                .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
+        return FriendProfileDetailResponse.from(target, profile);
+    }
+
+    /** 편의: id로 User 로딩 (없으면 NOT_FOUND) */
+    @Transactional(readOnly = true)
+    public User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
     }
 }
