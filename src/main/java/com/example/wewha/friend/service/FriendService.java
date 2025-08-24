@@ -8,6 +8,7 @@ import com.example.wewha.common.repository.UserProfileRepository;
 import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.friend.FriendshipStatus;
 import com.example.wewha.friend.dto.FriendContactResponse;
+import com.example.wewha.friend.dto.FriendProfileDetailResponse;
 import com.example.wewha.friend.dto.ReceivedFriendRequestDto;
 import com.example.wewha.friend.entity.UserFriendship;
 import com.example.wewha.friend.repository.FriendshipRepository;
@@ -125,5 +126,20 @@ public class FriendService {
         return userProfileRepository.findByUser(friend)
                 .map(p -> new FriendContactResponse(p.getKakaoId(), p.getInstaId()))
                 .orElse(new FriendContactResponse(null, null));
+    }
+
+    /** 대상 유저의 프로필 상세 조회 (없으면 CustomException NOT_FOUND) */
+    @Transactional(readOnly = true)
+    public FriendProfileDetailResponse getProfileView(User target) {
+        UserProfile profile = userProfileRepository.findByUser(target)
+                .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
+        return FriendProfileDetailResponse.from(target, profile);
+    }
+
+    /** 편의: id로 User 로딩 (없으면 NOT_FOUND) */
+    @Transactional(readOnly = true)
+    public User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
     }
 }
