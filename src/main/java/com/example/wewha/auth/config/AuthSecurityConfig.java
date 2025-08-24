@@ -17,6 +17,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration("authSecurityConfig") // <- 빈 이름 명시 (중복 방지)
 @RequiredArgsConstructor
@@ -30,6 +35,8 @@ public class AuthSecurityConfig {    // <- 클래스명 변경 (중복 방지)
     @Bean
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
+                // cors 설정
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // 1. CSRF, 세션 관리 설정 (Stateless API를 위함)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -60,6 +67,22 @@ public class AuthSecurityConfig {    // <- 클래스명 변경 (중복 방지)
         return http.build();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(Arrays.asList(
+                "http://localhost:5173",
+                "https://wewha.netlify.app"
+        ));
+        config.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
+        config.setAllowedHeaders(Arrays.asList("Content-Type","Authorization","X-Requested-With"));
+        config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 
     @Bean(name = "authAuthenticationManager") // <- 이름 분리
     public AuthenticationManager authAuthenticationManager(AuthenticationConfiguration config) throws Exception {

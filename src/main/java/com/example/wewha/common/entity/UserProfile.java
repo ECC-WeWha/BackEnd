@@ -26,12 +26,6 @@ public class UserProfile {
     @JoinColumn(name = "language_id")
     private Language language;
 
-    /* region은 User 엔티티로..
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "region_id")
-    private Region region;
-     */
-
     @Column(name = "purpose", nullable = false)
     private String purpose;
 
