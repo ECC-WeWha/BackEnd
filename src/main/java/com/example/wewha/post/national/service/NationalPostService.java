@@ -1,4 +1,4 @@
-package com.example.wewha.post.general.service;
+package com.example.wewha.post.national.service;
 
 import com.example.wewha.common.entity.User;
 import com.example.wewha.common.repository.UserRepository;
@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PostService {
+@Transactional(readOnly = true)
+public class NationalPostService {
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
@@ -38,12 +39,11 @@ public class PostService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         // 1. 게시판(Board) 정보 찾기
-        // '일반 게시판' 또는 '여행' 게시판을 찾도록 가정합니다.
-        Board generalBoard = boardRepository.findByBoardName("일반")
-                .orElseThrow(() -> new IllegalArgumentException("일반 게시판을 찾을 수 없습니다."));
+        Board nationalBoard = boardRepository.findByBoardName("국적")
+                .orElseThrow(() -> new IllegalArgumentException("국적 게시판을 찾을 수 없습니다."));
 
         // 2. 해당 게시판 내에서 카테고리(category) 찾기 (수정된 부분)
-        Category category = categoryRepository.findByBoardAndCategoryName(generalBoard, request.getCategory())
+        Category category = categoryRepository.findByBoardAndCategoryName(nationalBoard, request.getCategory())
                 .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
 
         Post post = Post.builder()
@@ -112,12 +112,12 @@ public class PostService {
     public Page<PostSummaryResponse> getPosts(String category, Pageable pageable) {
 
         // 1. 게시판(Board) 정보 찾기
-        Board generalBoard = boardRepository.findByBoardName("일반")
-                .orElseThrow(() -> new IllegalArgumentException("일반 게시판을 찾을 수 없습니다."));
+        Board nationalBoard = boardRepository.findByBoardName("국적")
+                .orElseThrow(() -> new IllegalArgumentException("국적 게시판을 찾을 수 없습니다."));
 
         // 2. 카테고리 필터가 있는 경우
         if (category != null && !category.isEmpty()) {
-            Optional<Category> foundCategory = categoryRepository.findByBoardAndCategoryName(generalBoard, category);
+            Optional<Category> foundCategory = categoryRepository.findByBoardAndCategoryName(nationalBoard, category);
 
             if (foundCategory.isPresent()) {
                 Page<Post> posts = postRepository.findByCategory(foundCategory.get(), pageable);
@@ -127,7 +127,7 @@ public class PostService {
             }
         } else {
             // 카테고리 필터가 없는 경우 (전체 조회)
-            Page<Post> posts = postRepository.findByCategoryBoard(generalBoard, pageable);
+            Page<Post> posts = postRepository.findByCategoryBoard(nationalBoard, pageable);
             return posts.map(PostSummaryResponse::new);
         }
     }

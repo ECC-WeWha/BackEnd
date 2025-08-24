@@ -8,7 +8,7 @@ import com.example.wewha.comments.repository.CommentRepository;
 import com.example.wewha.common.entity.User;
 import com.example.wewha.common.repository.UserRepository;
 import com.example.wewha.post.common.domain.Post;
-import com.example.wewha.post.general.repository.PostRepository;
+import com.example.wewha.post.common.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
