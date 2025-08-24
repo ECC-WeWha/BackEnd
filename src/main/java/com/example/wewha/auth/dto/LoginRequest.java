@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginRequest {
+
     private String loginId;       // 아이디(= loginId)
     private String password;   // 비밀번호
 }

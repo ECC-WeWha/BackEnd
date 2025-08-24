@@ -85,6 +85,7 @@ public class AuthService {
      * - (옵션 호환) loginId로 없고 입력이 이메일 형식이면 이메일로도 조회 시도
      */
     public LoginResponse login(LoginRequest request) {
+
         String loginId = request.getLoginId(); // 프론트 로그인 아이디
 
         User user = userRepository.findByLoginId(loginId)
