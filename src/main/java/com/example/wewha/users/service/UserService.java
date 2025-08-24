@@ -44,11 +44,9 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
 
-        // 프로필 없을 경우 자동 생성
+        //
         UserProfile profile = userProfileRepository.findById(user.getUserId())
-                .orElseGet(() -> userProfileRepository.save(
-                        UserProfile.builder().user(user).build()
-                ));
+                .orElse(null);
 
         return UserInfoResponse.of(user, profile);
     }
@@ -65,11 +63,16 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
 
-        // 프로필 없으면 생성
+        //
         UserProfile profile = userProfileRepository.findById(user.getUserId())
-                .orElseGet(() -> userProfileRepository.save(
-                        UserProfile.builder().user(user).build()
-                ));
+                .orElseGet(() -> {
+                    UserProfile p = UserProfile.builder()
+                            .user(user)
+                            .purpose("")   // 또는 "unknown" 등 팀 기준값
+                            .major("")     // 또는 "undecided" 등 팀 기준값
+                            .build();
+                    return userProfileRepository.save(p);
+                });
 
         // ----- User(계정) 쪽 변경 -----
         if (updateRequest.getNickname() != null) {

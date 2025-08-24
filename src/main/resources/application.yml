@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    active: h2
+
   application:
     name: wewha
 
@@ -9,9 +12,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
-   hibernate:
+    hibernate:
       ddl-auto: update
-   show-sql: true
+    show-sql: true
 
   security:
     user:
