@@ -1,9 +1,9 @@
-package com.example.wewha.post.general.controller;
-
+package com.example.wewha.post.national.controller;
 
 import com.example.wewha.common.dto.ApiResponse;
 import com.example.wewha.post.common.dto.*;
-import com.example.wewha.post.general.service.PostService;
+import com.example.wewha.post.national.service.NationalPostService;
+import com.example.wewha.post.national.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,14 +14,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/national-posts")
 @RequiredArgsConstructor
-public class PostController {
-
-    private final PostService postService;
+public class NationalPostController {
+    private final NationalPostService postService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<PostCreateResponse>> createPost(
@@ -29,7 +29,6 @@ public class PostController {
             @RequestPart("postData") PostCreateRequest request,
             @RequestPart(value = "images", required = false) List<MultipartFile> images) {
 
-        // --- 여기를 수정했습니다 ---
         String userEmail = userDetails.getUsername();
 
         PostCreateResponse responseData = postService.createPost(userEmail, request, images);
@@ -57,11 +56,13 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<PostSummaryResponse>>> getPosts(
-            @RequestParam(required = false) String category,
+    public ResponseEntity<ApiResponse<Page<PostSummaryResponse>>> getNationalPosts(
+            // required = false 추가
+            @RequestParam(name = "country", required = false) String country,
             Pageable pageable) {
 
-        Page<PostSummaryResponse> responseData = postService.getPosts(category, pageable);
+        // getPostsByCountry -> getPosts로 메서드 이름 변경
+        Page<PostSummaryResponse> responseData = postService.getPosts(country, pageable);
         ApiResponse<Page<PostSummaryResponse>> response = new ApiResponse<>(200, "게시글 목록 조회 성공!", responseData);
         return ResponseEntity.ok(response);
     }
@@ -72,5 +73,4 @@ public class PostController {
         ApiResponse<PostDetailResponse> response = new ApiResponse<>(200, "게시글 상세 조회 성공!", responseData);
         return ResponseEntity.ok(response);
     }
-
 }

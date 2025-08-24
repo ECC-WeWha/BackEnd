@@ -1,6 +1,7 @@
 package com.example.wewha.post.common.domain;
 
 import jakarta.persistence.*;
+import com.example.wewha.post.common.domain.Board;
 import lombok.*;
 
 @Entity
@@ -15,7 +16,15 @@ public class Category {
     @Column(name = "category_id")
     private Long id;
 
-    @Column(name = "category_name", nullable = false)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id", nullable = false)
+    private Board board;
 
+    @Column(name = "category_name", nullable = false)
+    private String categoryName;
+
+    public Category(Board board, String categoryName) {
+        this.board = board;
+        this.categoryName = categoryName;
+    }
 }
