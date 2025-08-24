@@ -66,4 +66,7 @@ public class User {
         this.updatedAt = new Timestamp(System.currentTimeMillis());
     }
 
+    public Long getId() {
+        return userId;
+    }
 }
