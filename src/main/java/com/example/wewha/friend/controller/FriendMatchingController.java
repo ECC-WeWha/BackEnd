@@ -10,6 +10,7 @@ import com.example.wewha.friend.dto.MatchProfileRequestDto;
 import com.example.wewha.friend.dto.MatchProfileResponseDto;
 import com.example.wewha.friend.dto.UserProfileDto;
 import com.example.wewha.friend.service.FriendMatchingService;
+import com.example.wewha.users.controller.UserController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,20 +47,25 @@ public class FriendMatchingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // 언어별 프로필 조회
     @GetMapping("/profiles")
-    public ResponseEntity<ApiResponse<List<MatchProfileResponseDto>>> showProfileByStudyLanguage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("language") String languageName) {
-         String email = userDetails.getUsername();
+    public ResponseEntity<UserController.MsgData<List<MatchProfileResponseDto>>> showProfiles(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(value = "language", required = false) String languageName
+    ) {
+        if (languageName == null || languageName.isBlank()) {
+            return ResponseEntity.badRequest()
+                    .body(new UserController.MsgData<>("language 쿼리 파라미터는 필수입니다.", null));
+        }
+
+        String email = userDetails.getUsername();
         User currentUser = userRepository.findByEmail(email)
-                .orElseThrow(()->new CustomException(ErrorCode.ERR_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
 
         List<MatchProfileResponseDto> profiles = friendMatchingService.showProfileByStudyLanguage(currentUser, languageName);
-        ApiResponse<List<MatchProfileResponseDto>> response = ApiResponse.success(
-                200,
-                "친구 매칭 프로필 목록이 성공적으로 조회되었습니다.",
-                profiles
-        );
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new UserController.MsgData<>(
+                "친구 매칭 대상 프로필 목록이 성공적으로 조회되었습니다.",
+                profiles
+        ));
     }
 }

@@ -53,8 +53,18 @@ public class FriendMatchingService {
         return profiles.stream()
                 .filter(profile -> !profile.getUser().equals(currentUser)) // 자기 자신 제외
                 .map(profile -> {
+                    var target = profile.getUser();
+
+                    boolean pendingAB = friendshipRepository
+                            .existsByRequesterAndReceiverAndStatus(currentUser, target, FriendshipStatus.PENDING);
+                    boolean pendingBA = friendshipRepository
+                            .existsByRequesterAndReceiverAndStatus(target, currentUser, FriendshipStatus.PENDING);
                     boolean isFriendRequested = friendshipRepository.existsByRequesterAndReceiverAndStatus(
                             currentUser, profile.getUser(), FriendshipStatus.PENDING);
+                    boolean acceptedAB = friendshipRepository
+                            .existsByRequesterAndReceiverAndStatus(currentUser, target, FriendshipStatus.ACCEPTED);
+                    boolean acceptedBA = friendshipRepository
+                            .existsByRequesterAndReceiverAndStatus(target, currentUser, FriendshipStatus.ACCEPTED);
                     boolean isFriend = friendshipRepository.existsByRequesterAndReceiverAndStatus(
                             currentUser, profile.getUser(), FriendshipStatus.ACCEPTED);
 
