@@ -31,15 +31,22 @@ public class FriendMatchingService {
                 .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
         Language studyLang = languageRepository.findByName(dto.getStudyLanguageName())
                 .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
-        // 중복 체크
-        if (userProfileRepository.existsByUser(currentUser)) {
-            throw new CustomException(ErrorCode.ERR_CONFLICT);
-        }
 
-        // 2. db에 저장
-        UserProfile userProfile = dto.toEntity(currentUser, lang, studyLang);
-        UserProfile saved = userProfileRepository.save(userProfile);
-        return saved;
+        // 기존 UserProfile 찾아오기
+        UserProfile userProfile = userProfileRepository.findById(currentUser.getUserId())
+                .orElseThrow(() -> new CustomException(ErrorCode.ERR_NOT_FOUND));
+
+        // 값 업데이트
+        userProfile.setLanguage(lang);
+        userProfile.setStudyLanguage(studyLang);
+        userProfile.setPurpose(dto.getPurpose());
+        userProfile.setMajor(dto.getMajor());
+        userProfile.setKoreanTopicScore(dto.getKoreanTopicScore());
+        userProfile.setKakaoId(dto.getKakaoId());
+        userProfile.setInstaId(dto.getInstaId());
+        userProfile.setIntroduction(dto.getIntroduction());
+
+        return userProfileRepository.save(userProfile);
     }
 
     @Transactional(readOnly = true)

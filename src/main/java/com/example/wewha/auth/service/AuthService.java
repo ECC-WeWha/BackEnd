@@ -72,7 +72,7 @@ public class AuthService {
 
 
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findByEmail(request.getUserId())
                 .orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
