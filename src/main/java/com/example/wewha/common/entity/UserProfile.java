@@ -26,10 +26,10 @@ public class UserProfile {
     @JoinColumn(name = "language_id")
     private Language language;
 
-    @Column(name = "purpose", nullable = false)
+    @Column(name = "purpose", nullable = true)
     private String purpose;
 
-    @Column(name = "major", nullable = false)
+    @Column(name = "major", nullable = true)
     private String major;
 
     @Column(name = "korean_topic_score")

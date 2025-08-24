@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 public class UserInfoResponse {
     private Long userId;
+    private String loginId;   // 유저가 로그인할 때 쓰는 아이디
     private String email;
     private String nickname;
     private String name;
@@ -42,6 +43,7 @@ public class UserInfoResponse {
 
         return UserInfoResponse.builder()
                 .userId(user.getUserId())
+                .loginId(user.getLoginId())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .name(user.getName())
