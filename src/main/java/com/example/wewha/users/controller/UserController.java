@@ -116,7 +116,7 @@ public class UserController {
 
     @Data
     @AllArgsConstructor
-    static class MsgData<T> {
+    public static class MsgData<T> {
         private String message;
         private T data;
     }
