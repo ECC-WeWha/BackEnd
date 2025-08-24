@@ -18,6 +18,6 @@ public class SignupRequest {
     private Long academicStatusId; // 학적
     private Integer year; // 학년
     private Integer birthYear; // 년생
-    private Long regionId; // 국적 (user_profiles 테이블에 저장됨)
+    private Long regionId; // 국적
 
 }
