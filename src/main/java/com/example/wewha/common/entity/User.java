@@ -19,6 +19,9 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
+    @Column(name = "login_id", unique = true)   // NULL 허용(기존 유저)
+    private String loginId;
+
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 

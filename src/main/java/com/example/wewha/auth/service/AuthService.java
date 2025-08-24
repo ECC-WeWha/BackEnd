@@ -30,8 +30,18 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    /**
+     * 회원가입
+     * - loginId: 프론트에서 입력하는 로그인 아이디 (문자/숫자)
+     * - email  : 이메일(중복 불가)
+     */
     public SignupResponse signup(SignupRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+        // 아이디/이메일 중복 체크
+        if (userRepository.existsByLoginId(request.getLoginId())) {
+            // ErrorCode에 LOGIN_ID_DUPLICATE가 없으면, 임시로 EMAIL_DUPLICATE 사용
+            throw new AuthException(ErrorCode.EMAIL_DUPLICATE);
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new AuthException(ErrorCode.EMAIL_DUPLICATE);
         }
 
@@ -41,8 +51,9 @@ public class AuthService {
         Region region = regionRepository.findById(request.getRegionId())
                 .orElseThrow(() -> new AuthException(ErrorCode.INVALID_REGION));
 
-        // region은 User에 세팅
+        // User 생성 (loginId 저장)
         User user = User.builder()
+                .loginId(request.getLoginId()) // 👈 로그인 아이디
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .nickname(request.getNickname())
@@ -50,16 +61,15 @@ public class AuthService {
                 .year(request.getYear())
                 .birthYear(request.getBirthYear())
                 .academicStatus(academicStatus)
-                .region(region)   // <-- 여기!
+                .region(region)
                 .build();
 
         User savedUser = userRepository.save(user);
 
-        // UserProfile에는 region을 넣지 않음
-        UserProfile profile = UserProfile.builder()
+        // 기본 프로필 생성
+        userProfileRepository.save(UserProfile.builder()
                 .user(savedUser)
-                .build();
-        userProfileRepository.save(profile);
+                .build());
 
         return SignupResponse.builder()
                 .userId(savedUser.getUserId())
@@ -69,11 +79,26 @@ public class AuthService {
                 .build();
     }
 
-
-
+    /**
+     * 로그인
+     * - 기본: loginId 로 조회
+     * - (옵션 호환) loginId로 없고 입력이 이메일 형식이면 이메일로도 조회 시도
+     */
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
+        String loginId = request.getLoginId(); // 프론트 로그인 아이디
+
+        User user = userRepository.findByLoginId(loginId)
+                .orElseGet(() -> {
+                    // 구계정 호환: 이메일 형식이면 이메일로도 시도
+                    if (loginId != null && loginId.contains("@")) {
+                        return userRepository.findByEmail(loginId).orElse(null);
+                    }
+                    return null;
+                });
+
+        if (user == null) {
+            throw new AuthException(ErrorCode.USER_NOT_FOUND);
+        }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new AuthException(ErrorCode.INVALID_PASSWORD);
@@ -91,7 +116,7 @@ public class AuthService {
 
     public void logout(HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
-        // 실제 서비스에서는 블랙리스트/만료처리 필요
+        // 실제 서비스에서는 블랙리스트/만료 처리 필요
         System.out.println("로그아웃 요청됨. 토큰: " + token);
     }
 
@@ -102,7 +127,7 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
 
-        // 구현에 따라 프로필 삭제 방법이 다를 수 있음
+        // 구현에 따라 프로필 삭제 방식이 다를 수 있음
         userProfileRepository.deleteById(user.getUserId());
         userRepository.delete(user);
     }

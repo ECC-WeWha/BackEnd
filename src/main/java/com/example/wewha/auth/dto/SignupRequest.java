@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SignupRequest {
     // User 테이블 필드
+    private String loginId;  // 프론트의 "아이디" → loginId로 저장
     private String email;
     private String password;
     private String nickname;
