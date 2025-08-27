@@ -20,7 +20,15 @@ spring:
       password: 1234
 
 server:
-  port: 5000
+  port: 5001
 
 jwt:
   secret: MySuperSecretKeyThatIsAtLeast32Bytes!
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG # HTTP 요청 로깅 활성화

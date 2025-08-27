@@ -37,9 +37,8 @@ public class Post {
     @Column(nullable = false)
     private String content;
 
-    @Builder.Default
-    @Column(name = "is_anonymous")
-    private boolean isAnonymous = false;
+    @Column(name = "is_anonymous", nullable = false)
+    private boolean anonymous;
 
     @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

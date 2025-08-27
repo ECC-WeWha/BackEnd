@@ -49,7 +49,7 @@ public class PostService {
         Post post = Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
-                .isAnonymous(request.isAnonymous()) // <-- 여기! 요청의 isAnonymous 값을 사용합니다.
+                .anonymous(request.isAnonymous()) // <-- 여기! 요청의 isAnonymous 값을 사용합니다.
                 .user(user)
                 .category(category)
                 .build();
